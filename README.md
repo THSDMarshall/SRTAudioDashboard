@@ -1,14 +1,16 @@
-# Stockton Round Table Audio Dashboard — v3.3
+# Audio Dashboard v3.5 — Sleigh Stop (based on v3.3)
 
-Full replacement website package. Upload the contents of this ZIP (not the ZIP itself) to the root of your GitHub Pages repository. Commit to main and allow GitHub Pages to publish.
+This release starts from v3.3, **before** the UMC22 simulation. It preserves the iPad Playback + Microphone fix and Audio Output Status panel.
 
-Changes:
-- Automatically requests Safari audioSession `play-and-record` before microphone capture, matching the successful iPad test.
-- Keeps microphone processing (echo cancellation, noise suppression, automatic gain control) disabled.
-- Adds Audio Output Status and Resume Audio button on the Live screen.
-- Logs session changes, microphone connection/disconnection, and Web Audio state changes.
-- Updates offline service-worker cache to v3.3.
+## Install
+Upload all ZIP contents to the root of your existing GitHub Pages repository, replacing the corresponding files. The browser's IndexedDB name is unchanged, so imported music and pads should remain in the same browser installation. Do not clear site data. Close and reopen the PWA after the new deployment to let the offline service worker refresh.
 
-Your existing music, pads and settings live in the browser's IndexedDB; they are not in this ZIP. Do not clear Safari website data. Test with the same origin and in the same Safari/PWA context where your data was imported.
+## Sleigh Stop
+In Setup choose one of:
+- Mute LEFT channel
+- Mute RIGHT channel
+- Reduce both master output channels to 50% linear amplitude (approximately -6 dB)
 
-Note: The web app cannot force iPadOS to choose a physical output device. Test the UMC22 and charging separately before a live event.
+On Live, tap **SLEIGH STOP** to engage and **RESUME OUTPUT** to disengage. This affects the final stereo Web Audio mix of music, jingles and *software-monitored* microphone. It does not mute a microphone passing through the Behringer UMC22's hardware Direct Monitor path or an amplifier's own controls. The existing STOP ALL AUDIO control remains separate.
+
+The selected mode persists. The engaged/disengaged state resets to OFF when the app is reloaded. Test both left and right with a stereo track and the actual interface before a public event.
