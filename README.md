@@ -1,16 +1,14 @@
-# Audio Dashboard v3.5 — Sleigh Stop (based on v3.3)
+# Audio Dashboard v3.6 — Sleigh Stop + iPad Routing + MP3 Fix
 
-This release starts from v3.3, **before** the UMC22 simulation. It preserves the iPad Playback + Microphone fix and Audio Output Status panel.
+This replaces the v3.5 ZIP. Upload **all files** in this ZIP to the repository root, replacing existing files. Do not clear Safari website data or delete the PWA: music and soundboard are stored in IndexedDB under the unchanged database name.
 
-## Install
-Upload all ZIP contents to the root of your existing GitHub Pages repository, replacing the corresponding files. The browser's IndexedDB name is unchanged, so imported music and pads should remain in the same browser installation. Do not clear site data. Close and reopen the PWA after the new deployment to let the offline service worker refresh.
+Fixes:
+- Explicit MP3/WAV/M4A/AAC/OGG/FLAC selectors for music and soundboard on iPad.
+- Restored `audio-routing-fix.js` and a script reference before `app.js` in `index.html`.
+- Requests the `play-and-record` audio session before microphone activation (when Safari supports it).
+- Updated offline service-worker cache to include the routing fix.
+- Retains the three Sleigh Stop modes, toggle button, and Audio Output Status panel.
 
-## Sleigh Stop
-In Setup choose one of:
-- Mute LEFT channel
-- Mute RIGHT channel
-- Reduce both master output channels to 50% linear amplitude (approximately -6 dB)
+Test on your iPad after deploying. Safari may retain an old service worker temporarily: close/reopen the PWA, and reload after GitHub Pages finishes publishing. If necessary visit the URL in Safari and refresh there. Do not clear website data.
 
-On Live, tap **SLEIGH STOP** to engage and **RESUME OUTPUT** to disengage. This affects the final stereo Web Audio mix of music, jingles and *software-monitored* microphone. It does not mute a microphone passing through the Behringer UMC22's hardware Direct Monitor path or an amplifier's own controls. The existing STOP ALL AUDIO control remains separate.
-
-The selected mode persists. The engaged/disengaged state resets to OFF when the app is reloaded. Test both left and right with a stereo track and the actual interface before a public event.
+Sleigh Stop affects browser-generated stereo music/jingles and software-monitored mic, not the UMC22 hardware Direct Monitor microphone.

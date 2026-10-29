@@ -1,15 +1,10 @@
-/* Audio Dashboard iPad routing diagnostic v3.2 — loaded before app.js. */
+/* iPad playback-and-microphone preference. Must load before app.js. */
 (()=>{'use strict';
-const history=[];let desired='play-and-record',micRequested=false,originalGUM=null;
-const session=navigator.audioSession;
-function log(message){const stamp=new Date().toLocaleTimeString();history.unshift(`${stamp} ${message}`);history.length=30;render();}
-function setSession(type){if(!session)return log('AudioSession API not available');try{session.type=type;log(`Requested audio session: ${type}; reported: ${session.type}`)}catch(e){log(`Audio session request failed: ${e.message}`)}}
-function render(){const e=document.getElementById('audioRoutingLog');if(e)e.textContent=history.join('\n');const s=document.getElementById('audioRoutingState');if(s)s.textContent=`Session: ${session?.type||'unavailable'} · Mic request: ${micRequested?'yes':'no'} · Engine: ${window.__srtAudioContext?.state||'see Live Audio'}`;}
-function install(){const anchor=document.getElementById('micStartBtn');if(!anchor||document.getElementById('audioRoutingPanel'))return;const panel=document.createElement('div');panel.id='audioRoutingPanel';panel.className='setup-card';panel.innerHTML=`<h3>5 · iPad Audio Routing Test</h3><p class="sub">iPadOS may lower the speaker volume when the microphone starts. These controls test the browser audio session; they cannot override system routing.</p><label>Requested audio session<select id="audioSessionChoice"><option value="play-and-record">Playback + microphone (test first)</option><option value="playback">Playback (comparison)</option><option value="auto">Automatic (comparison)</option></select></label><button type="button" id="audioSessionApply">Apply session</button><button type="button" id="audioRoutingRefresh">Refresh diagnostics</button><div id="audioRoutingState" class="sub"></div><pre id="audioRoutingLog" style="white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;max-height:160px;overflow:auto;color:#cbd5e1"></pre><p class="sub">Compare speaker volume with Duck amount set to 0 dB. If it still drops, the change is outside dashboard ducking. Test the UMC22 next.</p>`;anchor.closest('.setup-card').after(panel);document.getElementById('audioSessionApply').onclick=()=>{desired=document.getElementById('audioSessionChoice').value;setSession(desired)};document.getElementById('audioRoutingRefresh').onclick=render;render();}
-if(navigator.mediaDevices?.getUserMedia){originalGUM=navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);try{navigator.mediaDevices.getUserMedia=async constraints=>{if(constraints?.audio){micRequested=true;setSession(desired);const c={...constraints,audio:typeof constraints.audio==='object'?{...constraints.audio,echoCancellation:false,noiseSuppression:false,autoGainControl:false}:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}};log('Requesting microphone with processing disabled');try{const stream=await originalGUM(c);log('Microphone active');stream.getAudioTracks().forEach(track=>track.addEventListener('ended',()=>log('Microphone track ended')));return stream}catch(e){log(`Microphone failed: ${e.message}`);throw e}}return originalGUM(constraints)};log('Microphone diagnostic wrapper installed')}catch(e){log(`Microphone wrapper unavailable: ${e.message}`)}}
-if(session?.addEventListener)session.addEventListener('change',()=>log(`Audio session changed: ${session.type}`));
-document.addEventListener('visibilitychange',()=>log(document.hidden?'App moved to background':'App returned to foreground'));
-window.addEventListener('pageshow',()=>{install();render()});
-document.addEventListener('DOMContentLoaded',install);
-log('Routing diagnostic loaded');
+  function applyAudioRouting(){
+    if(!navigator.audioSession)return false;
+    try{navigator.audioSession.type='play-and-record';return navigator.audioSession.type==='play-and-record';}
+    catch(e){console.warn('Audio session setting unavailable:',e);return false;}
+  }
+  window.srtApplyAudioRouting=applyAudioRouting;
+  applyAudioRouting();
 })();
